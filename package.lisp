@@ -1,6 +1,6 @@
 (defpackage #:cl-sfml
   (:nicknames sfml)
-  (:use #:cl #:cffi #:cl-mop))
+  (:use #:cl #:cffi #:cl-mop #:cl-ppcre))
 
 (in-package :sfml)
 

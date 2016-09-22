@@ -10,7 +10,7 @@
 (defun test-window ()
   (with-foreign-string (title "hello world")
     (let* ((video-mode
-	    (make-instance 'video-mode-class
+	    (make-instance 'video-mode
 			   :width 640 :height 480 :bits-per-pixel 32))
 	   (style 7)
 	   (window (sf-window-create video-mode title style (null-pointer))))
