@@ -28,4 +28,26 @@
 
 (defcfun ("sfWindow_destroy" sf-window-destroy) :void
   (window :pointer))
-  
+
+(defclass window ()
+  ((pointer :initarg :pointer :initform nil :accessor window-pointer)))
+
+(defmethod window-is-open? ((w window))
+  (sf-window-is-open (window-pointer w)))
+
+(defmethod window-close ((w window))
+  (sf-window-close (window-pointer w)))
+
+(defmethod window-destroy ((w window))
+  (sf-window-destroy (window-pointer w))
+  (free-converted-object (window-pointer w) :pointer nil))
+
+(defmethod window-poll-event ((w window) (ev event))
+  (with-foreign-object (event '(:union sf-event))
+    (sf-window-poll-event (window-pointer w) event)
+    (let* (;;(lisp-event (convert-from-foreign event '(:pointer (:union sf-event))))
+	   (event-code
+	    (mem-ref (foreign-slot-pointer event '(:union sf-event) 'type) :int)))
+      (format t "event code: ~A~%" event-code)
+      (cond ((eq event-code (foreign-enum-value 'sf-event-type :sf-evt-closed))
+	     (make-instance 'event :type :sf-evt-closed))))))
