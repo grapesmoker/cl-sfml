@@ -30,7 +30,10 @@
   (window :pointer))
 
 (defclass window ()
-  ((pointer :initarg :pointer :initform nil :accessor window-pointer)))
+  ((pointer :initarg :pointer :initform nil :accessor window-pointer)
+   (prev-event-code :initarg :prev-event-code
+		    :initform :sf-evt-closed
+		    :accessor window-prev-event-code)))
 
 (defmethod window-is-open? ((w window))
   (sf-window-is-open (window-pointer w)))
@@ -42,12 +45,29 @@
   (sf-window-destroy (window-pointer w))
   (free-converted-object (window-pointer w) :pointer nil))
 
+;; This is a bit awkward because you'd think the window-poll-event
+;; function would return the event code, but because of the way that
+;; events are managed and because of some weirdness that I can't quite
+;; track down, I'm leaving it up to the event class itself to manage
+;; its own internals. So this function actually sets the internals
+;; of the event passed to it so that the caller can figure out what
+;; to do with it.
+
 (defmethod window-poll-event ((w window) (ev event))
-  (with-foreign-object (event '(:union sf-event))
-    (sf-window-poll-event (window-pointer w) event)
-    (let* (;;(lisp-event (convert-from-foreign event '(:pointer (:union sf-event))))
-	   (event-code
-	    (mem-ref (foreign-slot-pointer event '(:union sf-event) 'type) :int)))
-      (format t "event code: ~A~%" event-code)
-      (cond ((eq event-code (foreign-enum-value 'sf-event-type :sf-evt-closed))
-	     (make-instance 'event :type :sf-evt-closed))))))
+  (sf-window-poll-event (window-pointer w) (event-pointer ev))
+  (let* ((event-keyword
+	  (foreign-slot-value (event-pointer ev) '(:union sf-event) 'type)))
+    (setf (event-type ev) event-keyword)
+    (case event-keyword
+      (:sf-evt-closed
+       (progn
+	 ()))
+      (:sf-evt-key-pressed
+       (setf (event-struct ev)
+	     (foreign-slot-value (event-pointer ev) '(:union sf-event) 'key)))
+      (:sf-evt-key-released
+       (setf (event-struct ev)
+	     (foreign-slot-value (event-pointer ev) '(:union sf-event) 'key)))
+      (:t
+       ()))))
+

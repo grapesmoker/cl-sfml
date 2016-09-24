@@ -15,17 +15,27 @@
 	   (style 7)
 	   (window (make-instance
 		    'window
-		    :pointer (sf-window-create video-mode title style (null-pointer)))))
+		    :pointer (sf-window-create video-mode title style (null-pointer))))
+	   (event (make-instance 'event)))
       (loop
 	 while (window-is-open? window)
 	 do
-	   (let ((event (window-poll-event window (make-instance 'event))))
-	     (when event
-	       (if (eq (event-type event) :sf-evt-closed)
-		   (progn
-		     (window-close window)
-		     (window-destroy window)
-		     (format t "event: ~A~%" event)
-		     (format t "received close signal, exiting~%")))))))))
+	   (window-poll-event window event)
+	   (case (event-type event)
+	     (:sf-evt-closed
+	      (progn
+		(window-close window)
+		(window-destroy window)
+		(format t "event: ~A~%" (event-type event))
+		(format t "received close signal, exiting~%")))
+	     (:sf-evt-key-pressed
+	      (progn ()))
+		;; (format t "~C was pressed~%" (code-char (key-event-code (event-struct event))))))
+	     (:sf-evt-key-released
+	      (progn ()))
+		;; (format t "~C was released~%" (code-char (key-event-code (event-struct event))))))
+	     (:t
+	      ()))
+	   (setf (event-type event) :sf-evt-none)))))
 
 (test-window)

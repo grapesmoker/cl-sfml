@@ -25,6 +25,10 @@
 
 
 (defcenum sf-event-type
+  ;; there seems to be some issue with event management so this dummy
+  ;; code ensures that when the pointer to the event union is created
+  ;; it's filled with something that indicates there's no event
+  (:sf-evt-none -1)
   (:sf-evt-closed 0)
   (:sf-evt-resized 1)
   (:sf-evt-lost-focus 2)
@@ -55,7 +59,7 @@
 
 (defcstruct (sf-key-event :class key-event-type)
   (type sf-event-type)
-  (key-code sf-key-code)
+  (code :char)
   (alt sf-bool)
   (control sf-bool)
   (shift sf-bool)
@@ -64,7 +68,7 @@
 ;; class for key events
 
 (defclass key-event (root-event)
-  ((key-code :initarg :key-code :initform nil :accessor key-event-key-code)
+  ((code :initarg :code :initform nil :accessor key-event-code)
    (alt :initarg :alt :initform nil :accessor key-event-alt)
    (control :initarg :control :initform nil :accessor key-event-control)
    (shift :initarg :shift :initform nil :accessor key-event-shift)
@@ -72,12 +76,50 @@
 
 ;; transformation functions
 
+;; there's some kind of weird devilry happening where the button press
+;; and the button release events don't generate the same key codes
+;; as a consequence the automatic mapping between the sf-key-code
+;; and the generated values doesn't work
+;; this is a workaround to that
+
+
 (defmethod translate-from-foreign (p (type key-event-type))
-  (copy-from-foreign 'key-event p '(:struct sf-key-event)))
+  (let ((plist (call-next-method)))
+    (cond ((eq (getf plist 'type) :sf-evt-key-pressed)
+	   (let* ((code (getf plist 'code))
+		  (shift (getf plist 'shift))
+		  (substitute-code (getf *keypress-mapping* code)))
+	     (if substitute-code
+		 (setf (getf plist 'code) substitute-code)
+		 (progn
+		   (cond ((and (<= code 122)
+			       (>= code 97))
+			  (decf code 97))
+			 ((and (<= code 57)
+			       (>= code 48))
+			  (decf code 22))
+			 ((and (<= code 90)
+			       (>= code 65)
+			       shift)
+			  (decf code 65)))
+		   (setf (getf plist 'code) (foreign-enum-keyword 'sf-key-code code))))))
+	  ((eq (getf plist 'type) :sf-evt-key-released)
+	   (setf (getf plist 'code)
+		 (foreign-enum-keyword 'sf-key-code (getf plist 'code)))))
+    (make-instance 'key-event
+		   :type (getf plist 'type)
+		   :code (getf plist 'code)
+		   :alt (getf plist 'alt)
+		   :control (getf plist 'control)
+		   :shift (getf plist 'shift))))
+		   
+
+;;(defmethod translate-from-foreign (p (type key-event-type))
+;;  (copy-from-foreign 'key-event p '(:struct sf-key-event)))
 
 (defmethod translate-into-foreign-memory ((ev key-event) (type key-event-type) p)
     (copy-to-foreign ev p '(:struct sf-key-event) '
-		     (sf-event-type sf-key-code sf-bool sf-bool sf-bool sf-bool)))
+		     (sf-event-type :int sf-bool sf-bool sf-bool sf-bool)))
 
 
 ;; Text Events
@@ -349,16 +391,9 @@
   (sensor (:struct sf-sensor-event)))
 
 (defclass event (root-event)
-  ((size :initarg :size :initform nil :accessor event-size)
-   (key :initarg :key :initform nil :accessor event-key)
-   (text :initarg :text :initform nil :accessor event-text)
-   (mouse-move :initarg :mouse-move :initform nil :accessor event-mouse-move)
-   (mouse-button :initarg :mouse-button :initform nil :accessor event-mouse-button)
-   (mouse-wheel :initarg :mouse-wheel :initform nil :accessor event-mouse-wheel)
-   (mouse-wheel-scroll :initarg :mouse-wheel-scroll :initform nil :accessor event-mouse-wheel-scroll)
-   (joystick-move :initarg :joystick-move :initform nil :accessor event-joystick-move)
-   (joystick-button :initarg :joystick-button :initform nil :accessor event-joystick-button)
-   (joystick-connect :initarg :joystick-connect :initform nil :accessor event-joystick-connect)
-   (touch :initarg :touch :initform nil :accessor event-touch)
-   (sensor :initarg :sensor :initform nil :accessor event-sensor)))
+  ((pointer :initarg :pointer :initform (foreign-alloc '(:union sf-event)) :accessor event-pointer)
+   (event-struct :initarg :event :initform nil :accessor event-struct)))
+
+(defmethod initialize-instance :after ((ev event) &key)
+  (setf (foreign-slot-value (event-pointer ev) '(:union sf-event) 'type) -1))
 

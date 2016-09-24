@@ -55,7 +55,7 @@
   (:sf-key-period 50)
   (:sf-key-quote 51)
   (:sf-key-slash 52)
-  (:sf-key-backslahs 53)
+  (:sf-key-backslash 53)
   (:sf-key-tilde 54)
   (:sf-key-equal 55)
   (:sf-key-dash 56)
@@ -105,6 +105,28 @@
   (:sf-key-pause 100)
   (:sf-key-count 101))
 
+(defparameter *keypress-mapping*
+  '(8 :sf-key-backspace
+    27 :sf-key-escape
+    39 :sf-key-quote
+    42 :sf-key-multiply
+    43 :sf-key-add
+    44 :sf-key-comma
+    45 :sf-key-subtract
+    46 :sf-key-period
+    47 :sf-key-divide
+    59 :sf-key-semicolon
+    61 :sf-key-equal
+    91 :sf-key-l-bracket
+    92 :sf-key-backslash
+    93 :sf-key-r-bracket
+    96 :sf-key-tilde
+    127 :sf-key-delete))
+    
 
 (defcfun ("sfKeyboard_isKeyPressed" sf-keyboard-is-key-pressed) :boolean
   (key sf-key-code))
+
+(defun is-key-pressed? (key-code)
+  (sf-keyboard-is-key-pressed
+   (foreign-enum-keyword 'sf-key-code key-code)))
