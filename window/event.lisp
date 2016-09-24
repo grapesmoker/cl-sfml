@@ -397,3 +397,5 @@
 (defmethod initialize-instance :after ((ev event) &key)
   (setf (foreign-slot-value (event-pointer ev) '(:union sf-event) 'type) -1))
 
+(defun get-event-struct (ptr event-type)
+  (foreign-slot-value ptr '(:union sf-event) event-type))

@@ -53,21 +53,59 @@
 ;; of the event passed to it so that the caller can figure out what
 ;; to do with it.
 
+(defparameter event-struct-mapping
+  '(:sf-evt-key-pressed 'key
+    :sf-evt-key-released 'key
+    :sf-evt-closed nil
+    :sf-evt-resized 'size
+    :sf-evt-lost-focus 'nil
+    :sf-evt-mouse-moved 'mouse-move
+    :sf-evt-mouse-entered nil ;; 'mouse
+    :sf-evt-mouse-left nil ;; 'mouse
+    :sf-evt-mouse-button-pressed 'mouse-button
+    :sf-evt-mouse-button-released 'mouse-button
+    :sf-evt-mouse-wheel-moved 'mouse-wheel
+    :sf-evt-mouse-wheel-scrolled 'mouse-wheel-scroll
+    :sf-evt-joystick-button-pressed 'joystick-button
+    :sf-evt-joystick-button-released 'joystick-button
+    :sf-evt-joystick-moved 'joystick-move
+    :sf-evt-joystick-connected 'joystick-connect
+    :sf-evt-joystick-disconnected 'joystick-connect
+    :sf-evt-touch-began 'touch
+    :sf-evt-touch-moved 'touch
+    :sf-evt-touch-ended 'touch
+    :sf-evt-sensor-changed 'sensor))
+
+
 (defmethod window-poll-event ((w window) (ev event))
   (sf-window-poll-event (window-pointer w) (event-pointer ev))
   (let* ((event-keyword
 	  (foreign-slot-value (event-pointer ev) '(:union sf-event) 'type)))
     (setf (event-type ev) event-keyword)
-    (case event-keyword
-      (:sf-evt-closed
-       (progn
-	 ()))
-      (:sf-evt-key-pressed
-       (setf (event-struct ev)
-	     (foreign-slot-value (event-pointer ev) '(:union sf-event) 'key)))
-      (:sf-evt-key-released
-       (setf (event-struct ev)
-	     (foreign-slot-value (event-pointer ev) '(:union sf-event) 'key)))
-      (:t
-       ()))))
+    (let ((struct-type
+    	   (cadr (getf event-struct-mapping event-keyword))))
+      (when struct-type
+      	(setf (event-struct ev) (get-event-struct (event-pointer ev) struct-type))))))
+	      
+    
+    ;; (case event-keyword
+    ;;   (:sf-evt-closed
+    ;;    (progn
+    ;; 	 ()))
+    ;;   (:sf-evt-key-pressed
+    ;;    (setf (event-struct ev)
+    ;; 	     (foreign-slot-value (event-pointer ev) '(:union sf-event) 'key)))
+    ;;   (:sf-evt-key-released
+    ;;    (setf (event-struct ev)
+    ;; 	     (foreign-slot-value (event-pointer ev) '(:union sf-event) 'key)))
+    ;;   (:sf-evt-text-entered
+    ;;    (setf (event-struct ev)
+    ;; 	     (get-event-struct (event-pointer ev) 'text)))
+    ;;   (:sf-evt-mouse-moved
+    ;;    (setf (event-struct ev)
+    ;; 	     (get-event-struct (event-pointer ev) 'mouse-move)))
+    ;;   (:t
+    ;;    ())))))
 
+
+      
