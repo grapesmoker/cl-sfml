@@ -85,9 +85,17 @@
     (let ((struct-type
     	   (cadr (getf event-struct-mapping event-keyword))))
       (when struct-type
-      	(setf (event-struct ev) (get-event-struct (event-pointer ev) struct-type))))))
-	      
-    
+      	(setf (event-struct ev)
+	      (foreign-slot-value (event-pointer ev) '(:union sf-event) struct-type))))))
+	      ;; (get-event-struct (event-pointer ev) struct-type))))))		   
+
+(defmethod mouse-get-position ((w window) (m mouse))
+  (let ((pos (sf-mouse-get-position (window-pointer w))))
+    (print pos)))
+
+    ;; (setf (mouse-x m) (vector2-x pos)
+    ;; 	  (mouse-y m) (vector2-y pos))))
+   
     ;; (case event-keyword
     ;;   (:sf-evt-closed
     ;;    (progn

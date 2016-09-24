@@ -32,26 +32,27 @@
   (:sf-evt-closed 0)
   (:sf-evt-resized 1)
   (:sf-evt-lost-focus 2)
-  (:sf-evt-text-entered 3)
-  (:sf-evt-key-pressed 4)
-  (:sf-evt-key-released 5)
-  (:sf-evt-mouse-wheel-moved 6)
-  (:sf-evt-mouse-wheel-scrolled 7)
-  (:sf-evt-mouse-button-pressed 8)
-  (:sf-evt-mouse-button-released 9)
-  (:sf-evt-mouse-moved 10)
-  (:sf-evt-mouse-entered 11)
-  (:sf-evt-mouse-left 12)
-  (:sf-evt-joystick-button-pressed 13)
-  (:sf-evt-joystick-button-released 14)
-  (:sf-evt-joystick-moved 15)
-  (:sf-evt-joystick-connected 16)
-  (:sf-evt-joystick-disconnected 17)
-  (:sf-evt-touch-began 18)
-  (:sf-evt-touch-moved 19)
-  (:sf-evt-touch-ended 20)
-  (:sf-evt-sensor-changed 21)
-  (:sf-evt-count 22))
+  (:sf-evt-gained-focus 3)
+  (:sf-evt-text-entered 4)
+  (:sf-evt-key-pressed 5)
+  (:sf-evt-key-released 6)
+  (:sf-evt-mouse-wheel-moved 7)
+  (:sf-evt-mouse-wheel-scrolled 8)
+  (:sf-evt-mouse-button-pressed 9)
+  (:sf-evt-mouse-button-released 10)
+  (:sf-evt-mouse-moved 11)
+  (:sf-evt-mouse-entered 12)
+  (:sf-evt-mouse-left 13)
+  (:sf-evt-joystick-button-pressed 14)
+  (:sf-evt-joystick-button-released 15)
+  (:sf-evt-joystick-moved 16)
+  (:sf-evt-joystick-connected 17)
+  (:sf-evt-joystick-disconnected 18)
+  (:sf-evt-touch-began 19)
+  (:sf-evt-touch-moved 20)
+  (:sf-evt-touch-ended 21)
+  (:sf-evt-sensor-changed 22)
+  (:sf-evt-count 23))
 
 ;; Keyboard Events
 
@@ -76,46 +77,8 @@
 
 ;; transformation functions
 
-;; there's some kind of weird devilry happening where the button press
-;; and the button release events don't generate the same key codes
-;; as a consequence the automatic mapping between the sf-key-code
-;; and the generated values doesn't work
-;; this is a workaround to that
-
-
 (defmethod translate-from-foreign (p (type key-event-type))
-  (let ((plist (call-next-method)))
-    (cond ((eq (getf plist 'type) :sf-evt-key-pressed)
-	   (let* ((code (getf plist 'code))
-		  (shift (getf plist 'shift))
-		  (substitute-code (getf *keypress-mapping* code)))
-	     (if substitute-code
-		 (setf (getf plist 'code) substitute-code)
-		 (progn
-		   (cond ((and (<= code 122)
-			       (>= code 97))
-			  (decf code 97))
-			 ((and (<= code 57)
-			       (>= code 48))
-			  (decf code 22))
-			 ((and (<= code 90)
-			       (>= code 65)
-			       shift)
-			  (decf code 65)))
-		   (setf (getf plist 'code) (foreign-enum-keyword 'sf-key-code code))))))
-	  ((eq (getf plist 'type) :sf-evt-key-released)
-	   (setf (getf plist 'code)
-		 (foreign-enum-keyword 'sf-key-code (getf plist 'code)))))
-    (make-instance 'key-event
-		   :type (getf plist 'type)
-		   :code (getf plist 'code)
-		   :alt (getf plist 'alt)
-		   :control (getf plist 'control)
-		   :shift (getf plist 'shift))))
-		   
-
-;;(defmethod translate-from-foreign (p (type key-event-type))
-;;  (copy-from-foreign 'key-event p '(:struct sf-key-event)))
+ (copy-from-foreign 'key-event p '(:struct sf-key-event)))
 
 (defmethod translate-into-foreign-memory ((ev key-event) (type key-event-type) p)
     (copy-to-foreign ev p '(:struct sf-key-event) '

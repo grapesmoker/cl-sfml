@@ -7,7 +7,11 @@
   :components ((:file "package")
 	       (:file "sfml")
 	       (:file "utils")
-	       (:module window
+	       (:module system
+			:components ((:file "time")
+				     (:file "vectors")))
+	       (:module win
+			;; :depends-on (system)
 			:components ((:file "types")
 				     (:file "video-mode")
 				     (:file "keyboard")
@@ -16,6 +20,4 @@
 				     (:file "touch")
 				     (:file "sensor")
 				     (:file "event")
-				     (:file "window")))
-	       (:file "time")
-	       (:file "test" :depends-on (window))))
+				     (:file "window"))))) ;; :depends-on (mouse))))))
