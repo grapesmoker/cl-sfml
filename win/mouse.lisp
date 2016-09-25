@@ -15,7 +15,7 @@
 (defcfun ("sfMouse_isButtonPressed" sf-mouse-is-button-pressed) sf-bool
   (button sf-mouse-button))
 
-(defcfun ("sfMouse_getPosition" sf-mouse-get-position) sf-vector-2i
+(defcfun ("sfMouse_getPosition" sf-mouse-get-position) (:struct sf-vector-2i)
   (window :pointer))
 
 (defcfun ("sfMouse_setPosition" sf-mouse-set-position) :void
@@ -28,6 +28,3 @@
 
 (defmethod print-object ((m mouse) stream)
   (format stream "<MOUSE [X: ~D, Y:~D]>" (mouse-x m) (mouse-y m)))
-
-(defclass foo ()
-  ())

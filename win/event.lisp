@@ -362,3 +362,14 @@
 
 (defun get-event-struct (ptr event-type)
   (foreign-slot-value ptr '(:union sf-event) event-type))
+
+;; can't seem to read out mouse position properly for some reason
+;; so for now here's an auxiliary function that just updates the
+;; mouse position from the event
+
+(defmethod update-mouse-position ((m mouse) (ev event))
+  (let* ((ev-struct (event-struct ev))
+	 (x (mouse-event-x ev-struct))
+	 (y (mouse-event-y ev-struct)))
+    (setf (mouse-x m) x)
+    (setf (mouse-y m) y)))

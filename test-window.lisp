@@ -37,13 +37,22 @@
 	      ;; (format t "~A~%" (event-struct event)))
 	      )
 	     (:sf-evt-key-released
-	      (progn ()))
+	      )
 	     (:sf-evt-mouse-moved
-	      ;; (sf-mouse-get-position (window-pointer window))
-	      ;;(format t "~A~%" (event-struct event))
 	      )
 	     (:sf-evt-mouse-button-pressed
-	      ;;(format t "~A~%" (event-struct event))
+	      (mouse-get-position window mouse)
+	      (format t "mouse clicked at ~D,~D~%" (mouse-x mouse) (mouse-y mouse))
+	      )
+	     (:sf-evt-resized
+	      (window-get-size window)
+	      (window-get-position window)
+	      (format t "window is now ~D by ~D~%"
+		      (window-width window)
+		      (window-height window))
+	      (format t "window is at ~D, ~D~%"
+		      (window-x window)
+		      (window-y window))
 	      )
 	     (:t
 	      ()))

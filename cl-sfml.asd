@@ -14,6 +14,7 @@
 			;; :depends-on (system)
 			:components ((:file "types")
 				     (:file "video-mode")
+				     (:file "context")
 				     (:file "keyboard")
 				     (:file "mouse")
 				     (:file "joystick")

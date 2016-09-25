@@ -10,18 +10,10 @@
 ;; lisp-side class
 
 (defclass video-mode ()
-  ((width
-    :initarg :width
-    :initform 0
-    :accessor video-mode-width)
-   (height
-    :initarg :height
-    :initform 0
-    :accessor video-mode-height)
-   (bits-per-pixel
-    :initarg :bits-per-pixel
-    :initform 0
-    :accessor video-mode-bits-per-pixel)))
+  ((width :initarg :width :initform 0 :accessor video-mode-width)
+   (height :initarg :height :initform 0 :accessor video-mode-height)
+   (bits-per-pixel :initarg :bits-per-pixel :initform 0
+		   :accessor video-mode-bits-per-pixel)))
 
 (defmethod print-object ((vm video-mode) stream)
   (format stream
@@ -32,8 +24,8 @@
 
 ;; conversion methods
 
-(defmethod translate-from-foreign (p (type video-mode-type))
-  (copy-from-foreign 'video-mode p '(:struct sf-video-mode)))
+;;(defmethod translate-from-foreign (p (type video-mode-type))
+;;  (copy-from-foreign 'video-mode p '(:struct sf-video-mode)))
 
 (defmethod translate-into-foreign-memory ((vm video-mode) (type video-mode-type) p)
   (copy-to-foreign vm p '(:struct sf-video-mode) '(:unsigned-int :unsigned-int :unsigned-int)))
@@ -42,8 +34,23 @@
 
 (defcfun ("sfVideoMode_getDesktopMode" sf-video-mode-get-desktop-mode) (:struct sf-video-mode))
 
-(defcfun ("sfVideoMode_getFullscreenModes" sf-video-mode-get-fullscreen-modes) :pointer
-  (count :int))
+(defcfun ("sfVideoMode_getFullscreenModes" sf-video-mode-get-fullscreen-modes)
+    (:pointer (:struct sf-video-mode))
+  (count :pointer))
 
 (defcfun ("sfVideoMode_isValid" sf-video-mode-is-valid) :pointer
   (mode (:struct sf-video-mode)))
+
+
+(defun video-mode-get-desktop-mode ()
+  (sf-video-mode-get-desktop-mode))
+
+(defmethod video-mode-get-fullscreen-modes ((count integer))
+  (let ((vm-pointer
+	 (sf-video-mode-get-fullscreen-modes count)))
+    (loop
+       for i upto count
+       collect
+	 (mem-aref vm-pointer '(:struct sf-video-mode) i))))
+	 
+	 
