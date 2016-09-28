@@ -57,3 +57,6 @@
 (defmethod context-set-active ((cx context) flag)
   (when (or (null flag) (eq t flag))
     (sf-context-set-active (context-pointer cx) flag)))
+
+(defmethod context-destroy ((cx context))
+  (sf-context-destroy (context-pointer cx)))

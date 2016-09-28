@@ -1,7 +1,5 @@
 (in-package :sfml)
 
-(use-foreign-library libcsfml-window)
-
 (defcenum sf-window-style
   (:sf-none 0)
   (:sf-titlebar 1)

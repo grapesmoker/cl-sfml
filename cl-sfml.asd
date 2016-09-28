@@ -3,9 +3,11 @@
   :author "Jerry Vinokurov <grapesmoker@gmail.com>"
   :license "MIT"
   :serial t
-  :depends-on (#:cl-autowrap #:cffi #:cffi-libffi #:cl-mop #:cl-ppcre)
+  ;; :defsystem-depends-on ("cffi-grovel")
+  :depends-on (#:cl-autowrap #:cffi #:cffi-libffi #:cl-mop #:cl-ppcre #:cffi-grovel)
   :components ((:file "package")
 	       (:file "sfml")
+	       ;; (:cffi-grovel-file "sfml-grovel")
 	       (:file "utils")
 	       (:module system
 			:components ((:file "time")
@@ -21,4 +23,17 @@
 				     (:file "touch")
 				     (:file "sensor")
 				     (:file "event")
-				     (:file "window"))))) ;; :depends-on (mouse))))))
+				     (:file "window")))
+	       (:module graphics
+			:components ((:file "blend-mode")
+				     (:file "color")
+				     (:file "vertex")
+				     (:file "primitive-type")
+				     (:file "rect")
+				     (:file "transform")
+				     (:file "entity")
+				     (:file "shape")
+				     (:file "rectangle-shape")
+				     (:file "circle-shape")
+				     (:file "convex-shape")
+				     ))))

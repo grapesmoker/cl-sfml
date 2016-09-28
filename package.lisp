@@ -23,3 +23,10 @@
 (define-foreign-library libcsfml-audio
   (:unix (:or "libcsfml-audio.so"))
   (:t (:default "libcsfml-audio")))
+
+(use-foreign-library libcsfml-window)
+(use-foreign-library libcsfml-graphics)
+
+(defpackage #:cl-sfml-grovel
+  (:nicknames sfml-grovel)
+  (:use #:cl #:cffi))

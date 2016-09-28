@@ -24,8 +24,8 @@
 
 ;; conversion methods
 
-;;(defmethod translate-from-foreign (p (type video-mode-type))
-;;  (copy-from-foreign 'video-mode p '(:struct sf-video-mode)))
+(defmethod translate-from-foreign (p (type video-mode-type))
+  (copy-from-foreign 'video-mode p '(:struct sf-video-mode)))
 
 (defmethod translate-into-foreign-memory ((vm video-mode) (type video-mode-type) p)
   (copy-to-foreign vm p '(:struct sf-video-mode) '(:unsigned-int :unsigned-int :unsigned-int)))
@@ -45,12 +45,11 @@
 (defun video-mode-get-desktop-mode ()
   (sf-video-mode-get-desktop-mode))
 
-(defmethod video-mode-get-fullscreen-modes ((count integer))
-  (let ((vm-pointer
-	 (sf-video-mode-get-fullscreen-modes count)))
-    (loop
-       for i upto count
-       collect
-	 (mem-aref vm-pointer '(:struct sf-video-mode) i))))
-	 
-	 
+(defun video-mode-get-fullscreen-modes ()
+  (with-foreign-object (count-ptr :unsigned-long)
+    (let* ((video-modes-pointer (sf-video-mode-get-fullscreen-modes count-ptr))
+	   (count (mem-aref count-ptr :unsigned-long)))
+      (loop
+	 for i upto count
+	 collect
+	   (mem-aref video-modes-pointer '(:struct sf-video-mode) i)))))
