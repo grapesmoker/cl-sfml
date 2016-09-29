@@ -50,6 +50,17 @@
   ((settings :initarg :settings :initform nil :accessor contex-settings)
    (pointer :initarg :pointer :initform nil :accessor context-pointer)))
 
+(defun make-context (&optional (settings nil settings-p))
+  (cond (settings-p
+	 (make-instance 'context
+			:settings settings
+			:pointer (convert-to-foreign
+				  settings
+				  '(:pointer (:struct sf-context-settings)))))
+	(t
+	 (make-instance 'context
+			:pointer (null-pointer)))))
+
 (defmethod create-context ((cx context))
   (make-instance 'context
 		 :pointer (sf-context-create)))
