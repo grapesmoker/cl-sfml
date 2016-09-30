@@ -18,14 +18,22 @@
 
 (defcfun ("sfText_create" sf-text-create) :pointer)
 
-(defun make-text (&key (string "") font (size 0) style (color (make-color)))
-  (make-instance 'text
-		 :pointer (sf-text-create)
-		 :string string
-		 :font font
-		 :size size
-		 :style style
-		 :color color))
+(defun make-text (&key (string "") (font nil font-p)
+		    (size 0) (style nil style-p) (color (make-color)))
+  (let ((new-text
+	 (make-instance 'text
+			:pointer (sf-text-create)
+			:string string
+			:font font
+			:size size
+			:style style
+			:color color)))
+    (setf (text-string new-text) string)
+    (if font-p (setf (text-font new-text) font))
+    (setf (text-size new-text) size)
+    (if style-p (setf (text-style new-text) style))
+    (setf (text-color new-text) color)
+    new-text))
     
 (defcfun ("sfText_copy" sf-text-copy) :pointer
   (text :pointer))

@@ -26,3 +26,5 @@
 (defgeneric entity-move (entity offset))
 (defgeneric entity-rotate (entity angle))
 (defgeneric entity-do-scale (entity scale))
+
+(defgeneric entity-draw (entity target render-states))

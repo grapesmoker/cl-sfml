@@ -69,3 +69,8 @@
 			  (funcall #',c-setter
 				   (funcall #',pointer-accessor obj)
 				   new-value)))))))
+
+(defconstant +rads-per-angle+ (float (/ 1 180)))
+
+(defun angle->radians (angle)
+  (* pi angle +rads-per-angle+))

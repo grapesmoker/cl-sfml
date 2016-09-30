@@ -203,6 +203,8 @@
   (window :pointer)
   (grabbed sf-bool))
 
+(defmethod (setf window-mouse-cursor-grabbed) (grabbed (w window))
+  (sf-window-set-mouse-cursor-grabbed (window-pointer w) grabbed))
 
 
 (defmethod window-close ((w window))

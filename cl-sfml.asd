@@ -11,6 +11,7 @@
 	       (:file "utils")
 	       (:module system
 			:components ((:file "time")
+				     (:file "clock")
 				     (:file "vectors")))
 	       (:module win
 			;; :depends-on (system)

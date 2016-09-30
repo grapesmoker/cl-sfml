@@ -18,19 +18,33 @@
    (width :initarg :width :initform nil :accessor rect-width)
    (height :initarg :height :initform nil :accessor rect-height)))
 
+(defmethod print-object ((r rect) stream)
+  (format stream "<RECT (~A, ~A) x (~A, ~A)>"
+	  (rect-left r)
+	  (rect-top r)
+	  (rect-width r)
+	  (rect-height r)))
+
 (defmethod translate-from-foreign (p (type float-rect-type))
  (copy-from-foreign 'rect p '(:struct sf-float-rect)))
 
 (defmethod translate-into-foreign-memory ((r rect) (type float-rect-type) p)
   (copy-to-foreign r p '(:struct sf-float-rect)
-		   '(:float :float :float)))
+		   '(:float :float :float :float)))
 
 (defmethod translate-from-foreign (p (type int-rect-type))
  (copy-from-foreign 'rect p '(:struct sf-int-rect)))
 
 (defmethod translate-into-foreign-memory ((r rect) (type int-rect-type) p)
   (copy-to-foreign r p '(:struct sf-int-rect)
-		   '(:int :int :int)))
+		   '(:int :int :int :int)))
+
+(defun make-rect (&key (left 0) (top 0) (width 0) (height 0) (coerce-to 'float))
+  (make-instance 'rect
+		 :left (coerce left coerce-to)
+		 :top (coerce top coerce-to)
+		 :width (coerce width coerce-to)
+		 :height (coerce height coerce-to)))
 
 (defcfun ("sfFloatRect_contains" sf-float-rect-contains) sf-bool
   (rect (:pointer (:struct sf-float-rect)))

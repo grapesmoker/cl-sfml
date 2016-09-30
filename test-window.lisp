@@ -23,23 +23,36 @@
 	    ;;(make-render-window video-mode title style (null-pointer)))
 	   (event (make-instance 'event))
 	   (mouse (make-instance 'mouse))
+	   (font (make-font "arial.ttf"))
+	   (text (make-text :string "hello world"
+			    :size 28
+			    :color (make-color 0 255 0 0)
+			    :font font))
 	   (circle (make-circle 10)))
-      (print "got here")
       (setf (shape-position circle) (make-vector2 320.0 240.0))
       (setf (shape-fill-color circle) (make-color 255 0 0 255))
+      (setf (entity-position text) (make-vector2 320.0 40.0))
+      (setf (text-font text) font)
       (loop
 	 while (window-is-open? window)
 	 with prev-event = :sf-evt-none
+	 with framerate = 60.0
+	 with dt = (/ 1.0 framerate)
+	 with clock = (make-clock)
+	 with start-time = (clock-time-as-seconds clock)
+	 if (let ((elapsed-time (clock-time-as-seconds clock)))
+	      (> (- elapsed-time start-time) dt))
 	 do
-	   (render-window-clear window (make-color 255 255 255 0))
+	   (setf start-time (clock-time-as-seconds clock))
+	   (render-window-clear window (make-color 0 0 0 255))
 	   (entity-draw circle window (null-pointer))
+	   (entity-draw text window (null-pointer))
 	   (window-display window)
 	   (window-poll-event window event)
 	   (when (not (eq prev-event (event-type event)))
 	     (format t "prev event: ~A, current event: ~A~%"
 		     prev-event (event-struct event))
-	     (format t "circle position is: ~A~%" (shape-position circle))
-	     (print (circle-radius circle))
+
 	     (setf prev-event (event-type event)))
 	   (cond ((is-key-pressed? :sf-key-left)
 	   	  (entity-move circle (make-vector2 -1.0 0.0)))
