@@ -25,9 +25,11 @@
    (scale :accessor shape-scale)
    (size :accessor shape-size)
    (texture :accessor shape-texture)
+   (texture-rect :accessor shape-texture-rect)
+   (point-count :accessor shape-point-count)
    ;; bounding boxes are rect classes
-   (local-bbox :accessor shape-local-bbox)
-   (global-bbox :accessor shape-global-bbox)
+   (local-bbox :reader shape-local-bbox)
+   (global-bbox :reader shape-global-bbox)
    ;; this should store a color class
    (fill-color :initarg :fill-color
 	       :initform (make-color)
@@ -46,24 +48,24 @@
 ;; is made to the shape, we log which slots have been changed
 ;; and later when we do an update we clear the log.
 
-(defmethod (setf shape-position) :before (value (s shape))
-  (pushnew 'position (shape-changed-slots s)))
+;; (defmethod (setf shape-position) :before (value (s shape))
+;;   (pushnew 'position (shape-changed-slots s)))
 
-(defmethod (setf shape-rotation) :before (value (s shape))
-  (pushnew 'rotation (shape-changed-slots s)))
+;; (defmethod (setf shape-rotation) :before (value (s shape))
+;;   (pushnew 'rotation (shape-changed-slots s)))
 
-(defmethod (setf shape-scale) :before (value (s shape))
-  (pushnew 'scale (shape-changed-slots s)))
+;; (defmethod (setf shape-scale) :before (value (s shape))
+;;   (pushnew 'scale (shape-changed-slots s)))
 
-(defmethod (setf shape-size) :before (value (s shape))
-  (pushnew 'size (shape-changed-slots s)))
+;; (defmethod (setf shape-size) :before (value (s shape))
+;;   (pushnew 'size (shape-changed-slots s)))
 
-(defmethod (setf shape-fill-color) :before (value (s shape))
-  (pushnew 'fill-color (shape-changed-slots s)))
+;; (defmethod (setf shape-fill-color) :before (value (s shape))
+;;   (pushnew 'fill-color (shape-changed-slots s)))
 
-(defmethod (setf shape-outline-color) :before (value (s shape))
-  (pushnew 'outline-color (shape-changed-slots s)))
+;; (defmethod (setf shape-outline-color) :before (value (s shape))
+;;   (pushnew 'outline-color (shape-changed-slots s)))
 
-(defmethod (setf shape-outline-thickness) :before (value (s shape))
-  (pushnew 'outline-thickness (shape-changed-slots s)))
+;; (defmethod (setf shape-outline-thickness) :before (value (s shape))
+;;   (pushnew 'outline-thickness (shape-changed-slots s)))
 

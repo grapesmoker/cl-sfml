@@ -44,3 +44,28 @@
        do
 	 (setf (slot-value new-value slot-name) foreign-value))
     new-value))
+
+;; A lot of the getter/setter stuff is pretty much the same so it can
+;; be abstraced into a macro which will write the get/set methods
+;; for us. The methods rely on specializers to fetch and set the actual
+;; values via calls to the C library.
+
+;; specs is a list of lists, with each list having the form:
+;; (class-name slot slot-accessor pointer-accessor c-getter-name c-setter-name)
+
+(defmacro create-c-accessors (specs)
+  `(progn
+    ,@(loop
+	 for spec in specs
+	 collect
+	   (destructuring-bind (class slot slot-accessor
+				      pointer-accessor c-getter c-setter) spec
+	     `(list
+	       (defmethod ,slot-accessor :before ((obj ,class))
+			 (setf (slot-value obj ',slot)
+			       (funcall #',c-getter
+					(funcall #',pointer-accessor obj))))
+	       (defmethod (setf ,slot-accessor) :after (new-value (obj ,class))
+			  (funcall #',c-setter
+				   (funcall #',pointer-accessor obj)
+				   new-value)))))))

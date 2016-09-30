@@ -4,178 +4,228 @@
   ((type :initform :circle)
    (radius :initarg :radius :initform 0 :accessor circle-radius)))
 
-(defun make-circle (radius)
-  (make-instance 'circle :radius (coerce radius 'float)))
-
 (defcfun ("sfCircleShape_setRadius" sf-circle-shape-set-radius) :void
   (shape :pointer)
   (radius :float))
 
-(defmethod initialize-instance :after ((c circle) &key)
-  (setf (shape-pointer c) (sf-circle-shape-create))
-  (sf-circle-shape-set-radius (shape-pointer c) (circle-radius c)))
-
+(defmethod (setf circle-radius) :after ((radius number) (c circle))
+  (sf-circle-shape-set-radius (shape-pointer c) (coerce radius 'float)))
 
 ;; all the C functions
 
 (defcfun ("sfCircleShape_create" sf-circle-shape-create) :pointer)
 
+(defun make-circle (radius)
+  (let ((new-circle
+	 (make-instance 'circle
+			:radius (coerce radius 'float)
+			:pointer (sf-circle-shape-create))))
+    (setf (circle-radius new-circle) (coerce radius 'float))
+    new-circle))
+
+(defcfun ("sfCircleShape_getRadius" sf-circle-shape-get-radius) :float
+  (shape :pointer))
+
+(defmethod circle-radius :before ((c circle))
+  (setf (slot-value c 'radius) (sf-circle-shape-get-radius (shape-pointer c))))
+
 (defcfun ("sfCircleShape_copy" sf-circle-shape-copy) :pointer
   (shape :pointer))
+
+(defmethod circle-copy ((c circle))
+  (make-instance 'circle
+		 :radius (circle-radius c)
+		 :pointer (sf-circle-shape-copy (shape-pointer c))))
 
 (defcfun ("sfCircleShape_destroy" sf-circle-shape-destroy) :void
   (shape :pointer))
 
-(defcfun ("sfCircleShape_setPosition" sf-circle-shape-set-position) :void
-  (shape :pointer)
-  (position (:struct sf-vector-2f)))
-
-(defcfun ("sfCircleShape_setRotation" sf-circle-shape-set-rotation) :void
-  (shape :pointer)
-  (angle :float))
-
-(defcfun ("sfCircleShape_setScale" sf-circle-shape-set-scale) :void
-  (shape :pointer)
-  (scale (:struct sf-vector-2f)))
-
-(defcfun ("sfCircleShape_setOrigin" sf-circle-shape-set-origin) :void
-  (shape :pointer)
-  (origin (:struct sf-vector-2f)))
+(defmethod circle-destroy ((c circle))
+  (sf-circle-shape-destroy (shape-pointer c)))
 
 (defcfun ("sfCircleShape_getPosition" sf-circle-shape-get-position)
     (:struct sf-vector-2f)
   (shape :pointer))
 
+(defmethod shape-position :before ((c circle))
+  (setf (slot-value c 'position) (sf-circle-shape-get-position
+				  (shape-pointer c))))
+
+(defcfun ("sfCircleShape_setPosition" sf-circle-shape-set-position) :void
+  (shape :pointer)
+  (position (:struct sf-vector-2f)))
+
+(defmethod (setf shape-position) :after ((v vect) (c circle))
+  (sf-circle-shape-set-position (shape-pointer c) v))
+
+
 (defcfun ("sfCircleShape_getRotation" sf-circle-shape-get-rotation) :float
   (shape :pointer))
 
+(defmethod shape-rotation :before ((c circle))
+  (setf (slot-value c 'rotation) (sf-circle-shape-get-rotation (shape-pointer c))))
+
+(defcfun ("sfCircleShape_setRotation" sf-circle-shape-set-rotation) :void
+  (shape :pointer)
+  (angle :float))
+
+(defmethod (setf shape-rotation) :after ((angle number) (c circle))
+  (sf-circle-shape-set-rotation (shape-pointer c) (coerce angle 'float)))
+
 (defcfun ("sfCircleShape_getScale" sf-circle-shape-get-scale) :float
   (shape :pointer))
+
+(defmethod shape-origin :before ((c circle))
+  (setf (slot-value c 'origin) (sf-circle-shape-get-scale (shape-pointer c))))
+
+(defcfun ("sfCircleShape_setScale" sf-circle-shape-set-scale) :void
+  (shape :pointer)
+  (scale (:struct sf-vector-2f)))
+
+(defmethod (setf shape-scale) :after ((factor number) (c circle))
+  (sf-circle-shape-set-scale (shape-pointer c) (coerce factor 'float)))
 
 (defcfun ("sfCircleShape_getOrigin" sf-circle-shape-get-origin)
     (:struct sf-vector-2f)
   (shape :pointer))
 
+(defmethod shape-origin ((c circle))
+  (setf (slot-value c 'origin) (sf-circle-shape-get-origin (shape-pointer c))))
+
+(defcfun ("sfCircleShape_setOrigin" sf-circle-shape-set-origin) :void
+  (shape :pointer)
+  (origin (:struct sf-vector-2f)))
+
+(defmethod (setf shape-origin) :after ((v vect) (c circle))
+  (sf-circle-shape-set-origin (shape-pointer c) v))
+
 (defcfun ("sfCircleShape_move" sf-circle-shape-move) :void
   (shape :pointer)
   (offset (:struct sf-vector-2f)))
+
+(defmethod entity-move ((c circle) (offset vect))
+  (sf-circle-shape-move (shape-pointer c) offset))
 
 (defcfun ("sfCircleShape_rotate" sf-circle-shape-rotate) :void
   (shape :pointer)
   (angle :float))
 
+(defmethod entity-rotate ((c circle) (angle number))
+  (sf-circle-shape-rotate (shape-pointer c) (coerce angle 'float)))
+
 (defcfun ("sfCircleShape_scale" sf-circle-shape-scale) :void
   (shape :pointer)
   (factors (:struct sf-vector-2f)))
+
+(defmethod entity-do-scale ((c circle) (scale vect))
+  (sf-circle-shape-scale (shape-pointer c) scale))
+
+(defcfun ("sfCircleShape_getTexture" sf-circle-shape-get-texture) :pointer
+  (shape :pointer))
+
+(defmethod entity-texture :before ((c circle))
+  (setf (slot-value c 'texture) (sf-circle-shape-get-texture (shape-pointer c))))
 
 (defcfun ("sfCircleShape_setTexture" sf-circle-shape-set-texture) :void
   (shape :pointer)
   (texture :pointer)
   (reset-rect sf-bool))
 
+
+(defcfun ("sfCircleShape_getTextureRect" sf-circle-shape-get-texture-rect) :pointer
+  (shape :pointer))
+
+(defmethod shape-texture-rect :before ((c circle))
+  (setf (slot-value c 'texture-rect) (sf-circle-shape-get-texture-rect
+				      (shape-pointer c))))
+
 (defcfun ("sfCircleShape_setTextureRect" sf-circle-shape-set-texture-rect) :void
   (shape :pointer)
   (rect (:struct sf-int-rect)))
+
+(defmethod (setf shape-texture-rect) :after ((r rect) (c circle))
+  (sf-circle-shape-set-texture-rect (shape-pointer c) r))
+
+(defcfun ("sfCircleShape_getFillColor"
+	  sf-circle-shape-get-fill-color) (:struct sf-color)
+  (shape :pointer))
+
+(defmethod shape-fill-color :before ((c circle))
+  (setf (slot-value c 'fill-color) (sf-circle-shape-get-fill-color (shape-pointer c))))
 
 (defcfun ("sfCircleShape_setFillColor" sf-circle-shape-set-fill-color) :void
   (shape :pointer)
   (color (:struct sf-color)))
 
+(defmethod (setf shape-fill-color) :after ((c color) (circ circle))
+  (sf-circle-shape-set-fill-color (shape-pointer circ) c))
+
+(defcfun ("sfCircleShape_getOutlineColor"
+	  sf-circle-shape-get-outline-color) (:struct sf-color)
+  (shape :pointer))
+
+(defmethod shape-outline-color :before ((c circle))
+  (setf (slot-value c 'outline-color)
+	(sf-circle-shape-get-outline-color (shape-pointer c))))
+
 (defcfun ("sfCircleShape_setOutlineColor" sf-circle-shape-set-outline-color) :void
   (shape :pointer)
   (color (:struct sf-color)))
+
+(defmethod (setf shape-outline-color) :after ((c color) (circ circle))
+  (sf-circle-shape-set-outline-color (shape-pointer circ) c))
+
+(defcfun ("sfCircleShape_getOutlineThickness"
+	  sf-circle-shape-get-outline-thickness) :float
+  (shape :pointer))
+
+(defmethod shape-outline-thickness :before ((c circle))
+  (setf (slot-value c 'outline-thickness)
+	(sf-circle-shape-get-outline-thickness (shape-pointer c))))
 
 (defcfun ("sfCircleShape_setOutlineThickness"
 	  sf-circle-shape-set-outline-thickness) :void
   (shape :pointer)
   (thickness :float))
 
-(defcfun ("sfCircleShape_getTexture" sf-circle-shape-get-texture) :pointer
-  (shape :pointer))
-
-(defcfun ("sfCircleShape_getTextureRect" sf-circle-shape-get-texture-rect) :pointer
-  (shape :pointer))
-
-(defcfun ("sfCircleShape_getFillColor"
-	  sf-circle-shape-get-fill-color) (:struct sf-color)
-  (shape :pointer))
-
-(defcfun ("sfCircleShape_getOutlineColor"
-	  sf-circle-shape-get-outline-color) (:struct sf-color)
-  (shape :pointer))
-
-(defcfun ("sfCircleShape_getOutlineThickness"
-	  sf-circle-shape-get-outline-thickness) :float
-  (shape :pointer))
+(defmethod (setf shape-outline-thickness) :after ((thickness number) (circ circle))
+  (sf-circle-shape-set-outline-thickness
+   (shape-pointer circ) (coerce thickness 'float)))
 
 (defcfun ("sfCircleShape_getPointCount" sf-circle-shape-get-point-count)
     :unsigned-int
   (shape :pointer))
 
-(defcfun ("sfCircleShape_getPointCount" sf-circle-shape-get-point)
+(defmethod shape-point-count :before ((c circle))
+  (setf (slot-value c 'point-count)
+	(sf-circle-shape-get-point-count (shape-pointer c))))
+    
+(defcfun ("sfCircleShape_setPointCount" sf-circle-shape-set-point-count) :void
+  (shape :pointer)
+  (count :unsigned-int))
+
+(defmethod (setf shape-point-count) :after ((count integer) (c circle))
+  (sf-circle-shape-set-point-count (shape-pointer c) count))
+
+(defcfun ("sfCircleShape_getPoint" sf-circle-shape-get-point)
     (:struct sf-vector-2f)
   (shape :pointer)
   (index :unsigned-int))
-
-(defcfun ("sfCircleShape_setSize" sf-circle-shape-set-size) :void
-  (shape :pointer)
-  (size (:struct sf-vector-2f)))
-
-(defcfun ("sfCircleShape_getSize" sf-circle-shape-get-size) (:struct sf-vector-2f)
-  (shape :pointer))
 
 (defcfun ("sfCircleShape_getLocalBounds"
 	  sf-circle-shape-get-local-bounds) (:struct sf-float-rect)
   (shape :pointer))
 
+(defmethod shape-local-bbox :before ((c circle))
+  (setf (slot-value c 'local-bbox) (sf-circle-shape-get-local-bounds (shape-pointer c))))
+
 (defcfun ("sfCircleShape_getGlobalBounds"
 	  sf-circle-shape-get-global-bounds) (:struct sf-float-rect)
   (shape :pointer))
 
+(defmethod shape-global-bbox :before ((c circle))
+  (setf (slot-value c 'global-bbox)
+	(sf-circle-shape-get-global-bounds (shape-pointer c))))
 
-(defmethod update-circle-position ((circ circle))
-  (sf-circle-shape-set-position (shape-pointer circ) (shape-position circ)))
 
-(defmethod update-circle-rotation ((circ circle))
-  (sf-circle-shape-set-rotation (shape-pointer circ) (shape-rotation circ)))
 
-(defmethod update-circle-scale ((circ circle))
-  (sf-circle-shape-set-scale (shape-pointer circ) (shape-scale circ)))
-
-(defmethod update-circle-origin ((circ circle))
-  (sf-circle-shape-set-origin (shape-pointer circ) (shape-origin circ)))
-
-(defmethod update-circle-fill-color ((circ circle))
-  (sf-circle-shape-set-fill-color (shape-pointer circ) (shape-fill-color circ)))
-
-(defmethod update-circle-outline-color ((circ circle))
-  (sf-circle-shape-set-outline-color (shape-pointer circ) (shape-outline-color circ)))
-
-(defmethod update-circle-outline-thickness ((circ circle))
-  (sf-circle-shape-set-outline-thickness (shape-pointer circ)
-					    (shape-outline-thickness circ)))
-
-(defmethod update-circle-texture ((circ circle) reset-circ)
-  (sf-circle-shape-set-texture (shape-pointer circ)
-				  (shape-texture circ)
-				  reset-circ))
-
-(defmethod update-circle-size ((circ circle))
-  (sf-circle-shape-set-size (shape-pointer circ) (shape-size circ)))
-
-;; update any slots that have changed via calls to C and clear the tracker
-
-(defmethod update-circ ((circ circle))
-  (loop
-     for slot in (shape-changed-slots circ)
-     do
-       (case slot
-	 (position (update-circle-position circ))
-	 (rotation (update-circle-rotation circ))
-	 (scale (update-circle-scale circ))
-	 (size (update-circle-size circ))
-	 (fill-color (update-circle-fill-color circ))
-	 (outline-color (update-circle-outline-color circ))
-	 (outline-thickness (update-circle-outline-thickness circ))))
-  (setf (shape-changed-slots circ) '()))
-	 

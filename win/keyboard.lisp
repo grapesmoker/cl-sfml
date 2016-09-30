@@ -128,5 +128,6 @@
   (key sf-key-code))
 
 (defun is-key-pressed? (key-code)
-  (sf-keyboard-is-key-pressed
-   (foreign-enum-keyword 'sf-key-code key-code)))
+  (sf-keyboard-is-key-pressed key-code))
+
+;;   (foreign-enum-keyword 'sf-key-code key-code)))
