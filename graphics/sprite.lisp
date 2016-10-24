@@ -102,6 +102,18 @@
 (defmethod entity-do-scale ((spr sprite) (scale vect))
   (sf-sprite-scale (sprite-pointer spr) scale))
 
+(defcfun ("sfSprite_getTransform" sf-sprite-get-transform) (:struct sf-transform)
+  (shape :pointer))
+
+(defmethod entity-transform :before ((spr sprite))
+  (setf (slot-value spr 'transform) (sf-sprite-get-transform (sprite-pointer spr))))
+
+(defcfun ("sfSprite_getInverseTransform" sf-sprite-get-inverse-transform) (:struct sf-transform)
+  (shape :pointer))
+
+(defmethod entity-inverse-transform :before ((spr sprite))
+  (setf (slot-value spr 'inverse-transform) (sf-sprite-get-inverse-transform (sprite-pointer spr))))
+
 (defcfun ("sfSprite_getColor" sf-sprite-get-color) (:struct sf-color)
   (sprite :pointer))
 

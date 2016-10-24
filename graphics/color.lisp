@@ -31,7 +31,12 @@
 
 (defmethod translate-into-foreign-memory ((c color) (type color-type) p)
     (copy-to-foreign c p '(:struct sf-color) 
-		     '(sf-uint-8 sf-uint-8 sf-uint-8)))
+		     '(sf-uint-8 sf-uint-8 sf-uint-8 sf-uint-8)))
+
+;; these two functions are basically implemented via the constructor
+
+;; the methods are thin wrappers around the calls into C that are taken
+;; care of via the translation methods above
 
 (defcfun ("sfColor_fromRGB" sf-color-from-rgb) (:struct sf-color)
   (red sf-uint-8)
@@ -47,18 +52,32 @@
 (defcfun ("sfColor_fromInteger" sf-color-from-integer) (:struct sf-color)
   (color sf-uint-32))
 
+(defmethod integer->color ((int integer))
+  (sf-color-from-integer int))
+
 (defcfun ("sfColor_toInteger" sf-color-to-integer) sf-uint-32
   (color (:struct sf-color)))
+
+(defmethod color->integer ((c color))
+  (sf-color-to-integer c))
 
 (defcfun ("sfColor_add" sf-color-add) (:struct sf-color)
   (color1 (:struct sf-color))
   (color2 (:struct sf-color)))
 
+(defmethod color-add ((c1 color) (c2 color))
+  (sf-color-add c1 c2))
+
 (defcfun ("sfColor_subtract" sf-color-subtract) (:struct sf-color)
   (color1 (:struct sf-color))
   (color2 (:struct sf-color)))
+
+(defmethod color-subtract ((c1 color) (c2 color))
+  (sf-color-subtract c1 c2))
 
 (defcfun ("sfColor_modulate" sf-color-modulate) (:struct sf-color)
   (color1 (:struct sf-color))
   (color2 (:struct sf-color)))
 
+(defmethod color-modulate ((c1 color) (c2 color))
+  (sf-color-modulate c1 c2))

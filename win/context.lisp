@@ -10,6 +10,11 @@
   (minor-version :unsigned-int)
   (attribute-flags sf-uint-32))
 
+(defcenum sf-context-attribute
+  (:sf-context-default 0)
+  (:sf-context-core 1)
+  (:sf-context-debug 2))
+
 ;; lisp side struct
 
 (defclass context-settings ()

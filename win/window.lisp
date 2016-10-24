@@ -41,6 +41,29 @@
   (style sf-uint-32)
   (settings :pointer))
 
+;; This function is provided for the sake of completeness, but since
+;; modern Lisps are Unicode-aware out of the box, it doesn't make a
+;; whole lot of sense on this side. If one did want to use this directly,
+;; one would have to implement something that would allocate the memory
+;; and copy the Unicode code-points into it. I'm not going to do that.
+
+(defcfun ("sfWindow_createUnicode" sf-window-create-unicode) :pointer
+  (video-mode (:struct sf-video-mode))
+  (title :pointer)
+  (style sf-uint-32)
+  (settings :pointer))
+
+;; Again, a function that is provided solely for the sake of completeness
+;; and not actually intended to be used. This function creates the window
+;; from a native system handle, but there is no single way to get such a
+;; handle in Lisp. Presumably one could call a native windowing library and
+;; then pass the resulting handle into this function, but that's on you if
+;; you want to do that.
+
+(defcfun ("sfWindow_createFromHandle" sf-window-create-from-handle) :pointer
+  (handle :unsigned-long)
+  (settings :pointer))
+
 (defun make-window (video-mode title style context)
   (make-instance 'window
 		 :video-mode video-mode
@@ -63,7 +86,6 @@
 (defmethod window-is-open? :before ((w window))
   (setf (slot-value w 'is-open?)
 	(sf-window-is-open (window-pointer w))))
-
 
 (defcfun ("sfWindow_pollEvent" sf-window-poll-event) sf-bool
   (window :pointer)
@@ -121,6 +143,10 @@
   (with-foreign-string (title new-title)
     (sf-window-set-title (window-pointer w) title)))
 
+;; For the same reason that implementing the Unicode constructor above
+;; doesn't make much sense from the Lisp side, neither does this. Any
+;; Unicode bit-wrangling you want to do is your responsibility.
+
 (defcfun ("sfWindow_setUnicodeTitle" sf-window-set-unicode-title) :void
   (window :pointer)
   (title :pointer))
@@ -131,6 +157,9 @@
   (height :unsigned-int)
   (pixels :pointer))
 
+(defmethod window-set-icon ((w window) (icon image))
+  (sf-window-set-icon (window-pointer w) (image-width icon)
+		      (image-height icon) (image-pixels-pointer icon)))
 
 (defcfun ("sfWindow_setVisible" sf-window-set-visible) :void
   (window :pointer)
@@ -206,6 +235,11 @@
 (defmethod (setf window-mouse-cursor-grabbed) (grabbed (w window))
   (sf-window-set-mouse-cursor-grabbed (window-pointer w) grabbed))
 
+;; This returns the native handle of the window under whatever OS you are using
+;; but you should probably not rely on this to do anything sensible.
+
+(defcfun ("sfWindow_getSystemHandle" sf-window-get-system-handle) :pointer
+  (window :unsigned-long))
 
 (defmethod window-close ((w window))
   (sf-window-close (window-pointer w)))
@@ -256,9 +290,27 @@
       (when struct-type
       	(setf (event-struct ev)
 	      (foreign-slot-value (event-pointer ev) '(:union sf-event) struct-type))))))
-	      ;; (get-event-struct (event-pointer ev) struct-type))))))		   
+
+;; The wait-event function is the blocking cousin of poll-event. Otherwise it is
+;; exactly the same when it comes to processing the event.
+
+(defmethod window-wait-event ((w window) (ev event))
+  (sf-window-wait-event (window-pointer w) (event-pointer ev))
+  (let* ((event-keyword
+	  (foreign-slot-value (event-pointer ev) '(:union sf-event) 'type)))
+    (setf (event-type ev) event-keyword)
+    (let ((struct-type
+    	   (cadr (getf event-struct-mapping event-keyword))))
+      (when struct-type
+      	(setf (event-struct ev)
+	      (foreign-slot-value (event-pointer ev) '(:union sf-event) struct-type))))))
 
 (defmethod mouse-get-position ((w window) (m mouse))
   (let ((pos-vector (sf-mouse-get-position (window-pointer w))))
     (setf (mouse-x m) (vector2-x pos-vector)
 	  (mouse-y m) (vector2-y pos-vector))))
+
+(defmethod touch-get-position ((tt touch) (finger integer) (w window))
+  (let ((position (sf-touch-get-position finger (window-pointer w))))
+    (setf (slot-value tt 'position) position)
+    position))

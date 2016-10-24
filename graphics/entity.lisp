@@ -20,6 +20,8 @@
 	 :initform (make-vector2 1 1)
 	 :accessor entity-size)
    (texture :initarg :texture :initform nil :accessor entity-texture)
+   (transform :reader entity-transform)
+   (inverse-transform :reader entity-inverse-transform)
    (local-bbox :initarg :local-bbox :initform nil :accessor entity-local-bbox)
    (global-bbox :initarg :global-bbox :initform nil :accessor entity-global-bbox)))
 

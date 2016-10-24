@@ -75,7 +75,6 @@
 
 (defmethod transform-inverse ((tr transform))
   (sf-transform-get-inverse (transform-pointer tr)))
-  ;; (setf (transform-matrix tr) (pointer->matrix (transform-pointer tr))))
 
 (defcfun ("sfTransform_transformPoint" sf-transform-point) (:struct sf-vector-2f)
   (transform (:pointer (:struct sf-transform)))
@@ -88,7 +87,7 @@
   (transform (:pointer (:struct sf-transform)))
   (matrix :pointer))
 
-;; this method should only be used if you're manipulating OpenGL contexts directl
+;; this method should only be used if you're manipulating OpenGL contexts directly
 
 (defmethod transform-opengl-matrix :before ((tr transform))
   (cond ((null (slot-value tr 'opengl-matrix))
@@ -115,6 +114,17 @@
   (sf-transform-combine (transform-pointer tr) (transform-pointer other))
   (setf (transform-matrix tr) (pointer->matrix (transform-pointer tr)))
   (setf (transform-matrix other) (pointer->matrix (transform-pointer other)))
+  nil)
+
+(defcfun ("sfTransform_translate" sf-transform-translate) :void
+  (transform (:pointer (:struct sf-transform)))
+  (x :float)
+  (y :float))
+
+(defmethod transform-translate ((tr transform) (x number) (y number))
+  (sf-transform-translate (transform-pointer tr) (coerce x 'float) (coerce y 'float))
+  (setf (transform-matrix tr)
+	(pointer->matrix (transform-pointer tr)))
   nil)
 
 (defcfun ("sfTransform_rotate" sf-transform-rotate) :void

@@ -1,13 +1,21 @@
 (in-package :sfml)
 
-(defcstruct sf-font-info
+(defcstruct (sf-font-info :class font-info-type)
   (family :pointer))
 
 ;; You can't really modify the font in any way after it's loaded, so all
 ;; this does is wrap the pointer in a lispy interface.
 
 (defclass font ()
-  ((pointer :initarg :pointer :initform nil :accessor font-pointer)))
+  ((pointer :initarg :pointer :initform nil :accessor font-pointer)
+   (info :reader font-info)))
+
+(defclass font-info ()
+  ((pointer :initarg :pointer :initform nil :accessor font-info-pointer)))
+
+(defmethod translate-from-foreign (info (type font-info-type))
+  (let ((plist (call-next-method)))
+    (make-instance 'font-info :pointer (cadr plist))))
 
 (defcfun ("sfFont_createFromFile" sf-font-create-from-file) :pointer
   (filename :string))
@@ -27,8 +35,7 @@
   (font :pointer))
 
 (defmethod font-copy ((f font))
-  (let ((fp (sf-font-copy (font-pointer f))))
-    (make-instance 'font :pointer fp)))
+  (make-instance 'font :pointer (sf-font-copy (font-pointer f))))
 
 (defcfun ("sfFont_destroy" sf-font-destroy) :void
   (font :pointer))
@@ -84,5 +91,11 @@
   (font :pointer)
   (character-size :unsigned-int))
 
-;; (defmethod font-texture ((f font) (character-size integer))
-;;  (sf-font-get-texture 
+(defmethod font-get-texture ((f font) (character-size integer))
+  (sf-font-get-texture (font-pointer f) character-size))
+
+(defcfun ("sfFont_getInfo" sf-font-get-info) (:struct sf-font-info)
+  (font :pointer))
+
+(defmethod font-info :before ((f font))
+  (setf (slot-value f 'info) (sf-font-get-info (font-pointer f))))

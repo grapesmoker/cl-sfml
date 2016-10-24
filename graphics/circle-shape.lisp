@@ -58,7 +58,6 @@
 (defmethod (setf shape-position) :after ((v vect) (c circle))
   (sf-circle-shape-set-position (shape-pointer c) v))
 
-
 (defcfun ("sfCircleShape_getRotation" sf-circle-shape-get-rotation) :float
   (shape :pointer))
 
@@ -75,7 +74,7 @@
 (defcfun ("sfCircleShape_getScale" sf-circle-shape-get-scale) :float
   (shape :pointer))
 
-(defmethod shape-origin :before ((c circle))
+(defmethod shape-scale :before ((c circle))
   (setf (slot-value c 'origin) (sf-circle-shape-get-scale (shape-pointer c))))
 
 (defcfun ("sfCircleShape_setScale" sf-circle-shape-set-scale) :void
@@ -120,6 +119,18 @@
 (defmethod entity-do-scale ((c circle) (scale vect))
   (sf-circle-shape-scale (shape-pointer c) scale))
 
+(defcfun ("sfCircleShape_getTransform" sf-circle-shape-get-transform) (:struct sf-transform)
+  (shape :pointer))
+
+(defmethod entity-transform :before ((c circle))
+  (setf (slot-value c 'transform) (sf-circle-shape-get-transform (shape-pointer c))))
+
+(defcfun ("sfCircleShape_getInverseTransform" sf-circle-shape-get-inverse-transform) (:struct sf-transform)
+  (shape :pointer))
+
+(defmethod entity-inverse-transform :before ((c circle))
+  (setf (slot-value c 'inverse-transform) (sf-circle-shape-get-inverse-transform (shape-pointer c))))
+
 (defcfun ("sfCircleShape_getTexture" sf-circle-shape-get-texture) :pointer
   (shape :pointer))
 
@@ -131,6 +142,9 @@
   (texture :pointer)
   (reset-rect sf-bool))
 
+(defmethod entity-set-texture ((c circle) (tex texture) reset-rect)
+  (setf (entity-texture c) tex)
+  (sf-circle-shape-set-texture (shape-pointer c) (texture-pointer tex) reset-rect))
 
 (defcfun ("sfCircleShape_getTextureRect" sf-circle-shape-get-texture-rect) :pointer
   (shape :pointer))
@@ -211,6 +225,9 @@
     (:struct sf-vector-2f)
   (shape :pointer)
   (index :unsigned-int))
+
+(defmethod circle-get-point ((c circle) (index integer))
+  (sf-circle-shape-get-point (shape-pointer c) index))
 
 (defcfun ("sfCircleShape_getLocalBounds"
 	  sf-circle-shape-get-local-bounds) (:struct sf-float-rect)

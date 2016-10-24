@@ -40,32 +40,3 @@
    (outline-thickness :initarg :outline-thickness
 		      :initform nil
 		      :accessor shape-outline-thickness)))
-
-
-;; We might update one or more geometric parameters of the shape
-;; but we don't want to call into C every time we do that, so we
-;; keep track of which parameters have been updated. When a change
-;; is made to the shape, we log which slots have been changed
-;; and later when we do an update we clear the log.
-
-;; (defmethod (setf shape-position) :before (value (s shape))
-;;   (pushnew 'position (shape-changed-slots s)))
-
-;; (defmethod (setf shape-rotation) :before (value (s shape))
-;;   (pushnew 'rotation (shape-changed-slots s)))
-
-;; (defmethod (setf shape-scale) :before (value (s shape))
-;;   (pushnew 'scale (shape-changed-slots s)))
-
-;; (defmethod (setf shape-size) :before (value (s shape))
-;;   (pushnew 'size (shape-changed-slots s)))
-
-;; (defmethod (setf shape-fill-color) :before (value (s shape))
-;;   (pushnew 'fill-color (shape-changed-slots s)))
-
-;; (defmethod (setf shape-outline-color) :before (value (s shape))
-;;   (pushnew 'outline-color (shape-changed-slots s)))
-
-;; (defmethod (setf shape-outline-thickness) :before (value (s shape))
-;;   (pushnew 'outline-thickness (shape-changed-slots s)))
-
