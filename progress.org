@@ -1,0 +1,596 @@
+* Lisp bindings to CSFML - progress chart
+
+* modules
+
+- System module [5/7]
+  - [X] Clock.h [5/5]
+    - [X] sfClock_create
+    - [X] sfClock_copy
+    - [X] sfClock_destroy
+    - [X] sfClock_getElapsedTime
+    - [X] sfclock_restart
+  - [ ] Mutex.h [0/4] - not implementing
+    - [ ] sfMutex_create
+    - [ ] sfMutex_destroy
+    - [ ] sfMutex_lock
+    - [ ] sfMutex_unlock
+  - [X] Sleep.h [1/1]
+    - [X] sfSleep
+  - [ ] Thread.h [0/5] - not implementing
+    - [ ] sfThread_create
+    - [ ] sfThread_destroy
+    - [ ] sfThread_launch
+    - [ ] sfThread_wait
+    - [ ] sfThread_terminate
+  - [X] Time.h [6/6]
+    - [X] sfTime_asSeconds
+    - [X] sfTime_asMilliseconds
+    - [X] sfTime_asMicroseconds
+    - [X] sfSeconds
+    - [X] sfMilliseconds
+    - [X] sfMicroseconds
+  - [X] Vector2.h [3/3]
+    - [X] sfVector2i
+    - [X] sfVector2u
+    - [X] sfVector2f
+  - [X] Vector3.h [1/1]
+    - [X] sfVector3f
+
+- Window module [10/10]
+  - [X] Context.h [3/3]
+    - [X] sfContext_create
+    - [X] sfContext_destroy
+    - [X] sfContext_setActive
+  - [X] Event.h [13/13]
+    - [X] sfKeyEvent
+    - [X] sfEventType
+    - [X] sfTextEvent
+    - [X] sfMouseMoveEvent
+    - [X] sfMouseButtonEvent
+    - [X] sfMouseWheelEvent
+    - [X] sfMouseWheelScrollEvent
+    - [X] sfJoystickMoveEvent
+    - [X] sfJoystickButtonEvent
+    - [X] sfJoystickConnectEvent
+    - [X] sfTouchEvent
+    - [X] sfSensorEvent
+    - [X] sfEvent
+  - [X] Joystick.h [9/9]
+    - [X] joystick button enum
+    - [X] sfJoystickAxis
+    - [X] sfJoystick_isConnected
+    - [X] sfJoystick_getButtonCount
+    - [X] sfJoystick_hasAxis
+    - [X] sfJoystick_isButtonPressed
+    - [X] sfJoystick_getAxisPosition
+    - [X] sfJoystick_getIdentification
+    - [X] sfJoystick_update
+  - [X] JoystickIdentification.h [1/1]
+    - [X] sfJoystickIdentification
+  - [X] Keyboard.h [2/2]
+    - [X] sfKeyCode
+    - [X] sfKeyboard_isKeyPressed
+  - [X] Mouse.h [5/5]
+    - [X] sfMouseButton
+    - [X] sfMouseWheel
+    - [X] sfMouse_isButtonPressed
+    - [X] sfMouse_getPosition
+    - [X] sfMouse_setPosition
+  - [X] Sensor.h [4/4]
+    - [X] sfSensorType
+    - [X] sfSensor_isAvailable
+    - [X] sfSensor_setEnabled
+    - [X] sfSensor_getValue
+  - [X] Touch.h [2/2]
+    - [X] sfTouch_isDown
+    - [X] sfTouch_getPosition
+  - [X] VideoMode.h [4/4]
+    - [X] sfVideoMode
+    - [X] sfVideoMode_getDestktopMode
+    - [X] sfVideoMode_getFullscreenModes
+    - [X] sfVideoMode_isValid
+  - [X] Window.h [31/31]
+    - [X] sfWindowStyle
+    - [X] sfContextAttribute - in context.lisp
+    - [X] sfContextSettings - in context.lisp
+    - [X] sfWindow_create
+    - [X] sfWindow_createUnicode
+    - [X] sfWindow_createFromHandle
+    - [X] sfWindow_destroy
+    - [X] sfWindow_close
+    - [X] sfWindow_isOpen
+    - [X] sfWindow_getSettings
+    - [X] sfWindow_pollEvent
+    - [X] sfWindow_waitEvent
+    - [X] sfWindow_getPosition
+    - [X] sfWindow_setPosition
+    - [X] sfWindow_getSize
+    - [X] sfWindow_setSize
+    - [X] sfWindow_setTitle
+    - [X] sfWindow_setUnicodeTitle
+    - [X] sfWindow_setIcon
+    - [X] sfWindow_setVisible
+    - [X] sfWindow_setVerticalSyncEnabled
+    - [X] sfWindow_setMouseCursorVisible
+    - [X] sfWindow_setMouseCursorGrabbed - not clear if this function exists
+    - [X] sfWindow_setKeyRepeatEnabled
+    - [X] sfWindow_setFramerateLimit
+    - [X] sfWindow_setJoystickThreshold
+    - [X] sfWindow_setActive
+    - [X] sfWindow_requestFocus
+    - [X] sfWindow_hasFocus
+    - [X] sfWindow_display
+    - [X] sfWindow_getSystemHandle
+
+- [-] Graphics module [17/25]
+  - [X]  BlendMode.h [3/3]
+    - [X] sfBlendFactor
+    - [X] sfBlendEquation
+    - [X] sfBlendMode
+  - [X] CircleShape.h [33/33]
+    - [X] sfCircleShape_create
+    - [X] sfCircleShape_copy
+    - [X] sfCircleShape_destroy
+    - [X] sfCircleShape_setPosition
+    - [X] sfCircleShape_setRotation
+    - [X] sfCircleShape_setScale
+    - [X] sfCircleShape_setOrigin
+    - [X] sfCircleShape_getPosition
+    - [X] sfCircleShape_getRotation
+    - [X] sfCircleShape_getScale
+    - [X] sfCircleShape_getOrigin
+    - [X] sfCircleShape_move
+    - [X] sfCircleShape_rotate
+    - [X] sfCircleShape_scale
+    - [X] sfCircleShape_getTransform
+    - [X] sfCircleShape_getInverseTransform
+    - [X] sfCircleShape_setTexture
+    - [X] sfCircleShape_setTextureRect
+    - [X] sfCircleShape_setFillColor
+    - [X] sfCircleShape_setOutlineColor
+    - [X] sfCircleShape_setOutlineThickness
+    - [X] sfCircleShape_getTexture
+    - [X] sfCircleShape_getTextureRect
+    - [X] sfCircleShape_getFillColor
+    - [X] sfCircleShape_getOutlineColor
+    - [X] sfCircleShape_getOutlineThickness
+    - [X] sfCircleShape_getPointCount
+    - [X] sfCircleShape_getPoint
+    - [X] sfCircleShape_setRadius
+    - [X] sfCircleShape_getRadius
+    - [X] sfCircleShape_setPointCount
+    - [X] sfCircleShape_getLocalBounds
+    - [X] sfCircleShape_getGlobalBounds
+  - [X] Color.h [8/8]
+    - [X] sfColor
+    - [X] sfColor_fromRGB
+    - [X] sfColor_fromRGBA
+    - [X] sfColor_fromInteger
+    - [X] sfColor_toInteger
+    - [X] sfColor_add
+    - [X] sfColor_subtract
+    - [X] sfColor_modulate
+  - [X] ConvexShape.h [31/31]
+    - [X] sfConvexShape_create
+    - [X] sfConvexShape_copy
+    - [X] sfConvexShape_destroy
+    - [X] sfConvexShape_setPosition
+    - [X] sfConvexShape_setRotation
+    - [X] sfConvexShape_setScale
+    - [X] sfConvexShape_setOrigin
+    - [X] sfConvexShape_getPosition
+    - [X] sfConvexShape_getRotation
+    - [X] sfConvexShape_getScale
+    - [X] sfConvexShape_getOrigin
+    - [X] sfConvexShape_move
+    - [X] sfConvexShape_rotate
+    - [X] sfConvexShape_scale
+    - [X] sfConvexShape_getTransform
+    - [X] sfConvexShape_getInverseTransform
+    - [X] sfConvexShape_setTexture
+    - [X] sfConvexShape_setTextureRect
+    - [X] sfConvexShape_setFillColor
+    - [X] sfConvexShape_setOutlineColor
+    - [X] sfConvexShape_setOutlineThickness
+    - [X] sfConvexShape_getTexture
+    - [X] sfConvexShape_getTextureRect
+    - [X] sfConvexShape_getFillColor
+    - [X] sfConvexShape_getOutlineColor
+    - [X] sfConvexShape_getOutlineThickness
+    - [X] sfConvexShape_getPointCount
+    - [X] sfConvexShape_getPoint
+    - [X] sfConvexShape_setPointCount
+    - [X] sfConvexShape_getLocalBounds
+    - [X] sfConvexShape_getGlobalBounds
+  - [X] Font.h [12/12]
+    - [X] sfFont_createFromFile
+    - [X] sfFont_createFromMemory - not implementing
+    - [X] sfFont_createFromStream - not implementing
+    - [X] sfFont_copy
+    - [X] sfFont_destroy
+    - [X] sfFont_getGlyph
+    - [X] sfFont_getKerning
+    - [X] sfFont_getLineSpacing
+    - [X] sfFont_getUnderlinePosition
+    - [X] sfFont_getUnderlineThickness
+    - [X] sfFont_getTexture
+    - [X] sfFont_getInfo
+  - [X] FontInfo.h [1/1]
+    - [X] sfFontInfo
+  - [ ] Glsl.h [0/11]
+    - [ ] sfGlslVec2
+    - [ ] sfGlslBvec2
+    - [ ] sfGlslIvec2
+    - [ ] sfGlslVec3
+    - [ ] sfGlslIvec3
+    - [ ] sfGlslBvec3
+    - [ ] sfGlslVec4
+    - [ ] sfGlslIvec4
+    - [ ] sfGlslBvec4
+    - [ ] sfGlslMat3
+    - [ ] sfGlslMat4
+  - [X] Glyph.h [1/1]
+    - [X] sfGlyph
+  - [X] Image.h [17/17]
+    - [X] sfImage_create
+    - [X] sfImage_createFromColor
+    - [X] sfImage_createFromPixels
+    - [X] sfImage_createFromFile
+    - [X] sfImage_createFromMemory - not implementing
+    - [X] sfImage_createFromStream - not implementing
+    - [X] sfImage_copy
+    - [X] sfImage_destroy
+    - [X] sfImage_saveToFile
+    - [X] sfImage_getSize
+    - [X] sfImage_createMaskFromColor
+    - [X] sfImage_copyImage
+    - [X] sfImage_setPixel
+    - [X] sfImage_getPixel
+    - [X] sfImage_getPixelsPtr
+    - [X] sfImage_flipHorizontally
+    - [X] sfImage_flipVertically
+  - [X] PrimitiveType.h [1/1]
+    - [X] sfPrimitiveType
+  - [X] Rect.h [6/6]
+    - [X] sfFloatRect
+    - [X] sfIntRect
+    - [X] sfFloatRect_contains
+    - [X] sfIntRect_contains
+    - [X] sfFloatRect_intersect
+    - [X] sfIntRect_intersect
+  - [X] RectangleShape.h [32/32]
+    - [X] sfRectangleShape_create
+    - [X] sfRectangleShape_copy
+    - [X] sfRectangleShape_destroy
+    - [X] sfRectangleShape_setPosition
+    - [X] sfRectangleShape_setRotation
+    - [X] sfRectangleShape_setScale
+    - [X] sfRectangleShape_setOrigin
+    - [X] sfRectangleShape_getPosition
+    - [X] sfRectangleShape_getRotation
+    - [X] sfRectangleShape_getScale
+    - [X] sfRectangleShape_getOrigin
+    - [X] sfRectangleShape_move
+    - [X] sfRectangleShape_rotate
+    - [X] sfRectangleShape_scale
+    - [X] sfRectangleShape_getTransform
+    - [X] sfRectangleShape_getInverseTransform
+    - [X] sfRectangleShape_setTexture
+    - [X] sfRectangleShape_setTextureRect
+    - [X] sfRectangleShape_setFillColor
+    - [X] sfRectangleShape_setOutlineColor
+    - [X] sfRectangleShape_setOutlineThickness
+    - [X] sfRectangleShape_getTexture
+    - [X] sfRectangleShape_getTextureRect
+    - [X] sfRectangleShape_getFillColor
+    - [X] sfRectangleShape_getOutlineColor
+    - [X] sfRectangleShape_getOutlineThickness
+    - [X] sfRectangleShape_getPointCount
+    - [X] sfRectangleShape_getPoint
+    - [X] sfRectangleShape_setSize
+    - [X] sfRectangleShape_getSize
+    - [X] sfRectangleShape_getLocalBounds
+    - [X] sfRectangleShape_getGlobalBounds
+  - [X] RenderStates.h [1/1]
+    - [X] sfRenderStates
+  - [-] RenderTexture.h [21/22] 
+    - [X] sfRenderTexture_create
+    - [X] sfRenderTexture_destroy
+    - [X] sfRenderTexture_getSize
+    - [X] sfRenderTexture_setActive
+    - [X] sfRenderTexture_display
+    - [X] sfRenderTexture_clear
+    - [X] sfRenderTexture_setView
+    - [X] sfRenderTexture_getView
+    - [X] sfRenderTexture_getDefaultView
+    - [X] sfRenderTexture_getViewport
+    - [X] sfRenderTexture_mapPixelToCoords
+    - [X] sfRenderTexture_mapCoordsToPixel
+    - [ ] sfRenderTexture_drawPrimitives
+    - [X] sfRenderTexture_pushGLStates
+    - [X] sfRenderTexture_popGLStates
+    - [X] sfRenderTexture_resetGLStates
+    - [X] sfRenderTexture_getTexture
+    - [X] sfRenderTexture_setSmooth
+    - [X] sfRenderTexture_isSmooth
+    - [X] sfRenderTexture_setRepeated
+    - [X] sfRenderTexture_isRepeated
+    - [X] sfRenderTexture_generateMipmap      
+  - [-] RenderWindow.h [32/50]
+    - [X] sfRenderWindow_create
+    - [ ] sfRenderWindow_createUnicode
+    - [ ] sfRenderWindow_createFromHandle
+    - [X] sfRenderWindow_destroy
+    - [X] sfRenderWindow_close
+    - [X] sfRenderWindow_isOpen
+    - [X] sfRenderWindow_getSettings
+    - [ ] sfRenderWindow_pollEvent
+    - [ ] sfRenderWindow_waitEvent
+    - [X] sfRenderWindow_getPosition
+    - [X] sfRenderWindow_setPosition
+    - [X] sfRenderWindow_getSize
+    - [X] sfRenderWindow_setSize
+    - [X] sfRenderWindow_setTitle
+    - [ ] sfRenderWindow_setUnicodeTitle
+    - [ ] sfRenderWindow_setIcon
+    - [X] sfRenderWindow_setVisible
+    - [X] sfRenderWindow_setVerticalSyncEnabled
+    - [X] sfRenderWindow_setMouseCursorVisible
+    - [X] sfRenderWindow_setMouseCursorGrabbed
+    - [X] sfRenderWindow_setKeyRepeatEnabled
+    - [X] sfRenderWindow_setFramerateLimit
+    - [X] sfRenderWindow_setJoystickThreshold
+    - [X] sfRenderWindow_setActive
+    - [X] sfRenderWindow_requestFocus
+    - [X] sfRenderWindow_hasFocus
+    - [X] sfRenderWindow_display
+    - [ ] sfRenderWindow_getSystemHandle
+    - [X] sfRenderWindow_clear
+    - [X] sfRenderWindow_setView
+    - [X] sfRenderWindow_getView
+    - [ ] sfRenderWindow_getDefaultView
+    - [X] sfRenderWindow_getViewport
+    - [X] sfRenderWindow_mapPixelToCoords
+    - [X] sfRenderWindow_mapCoordsToPixel
+    - [X] sfRenderWindow_drawSprite
+    - [X] sfRenderWindow_drawText
+    - [ ] sfRenderWindow_drawShape
+    - [X] sfRenderWindow_drawCircleShape
+    - [X] sfRenderWindow_drawConvexShape
+    - [X] sfRenderWindow_drawRectangleShape
+    - [ ] sfRenderWindow_drawVertexArray
+    - [ ] sfRenderWindow_drawPrimitives
+    - [ ] sfRenderWindow_pushGLStates
+    - [ ] sfRenderWindow_popGLStates
+    - [ ] sfRenderWindow_resetGLStates
+    - [ ] sfRenderWindow_capture
+    - [ ] sfMouse_getPositionRenderWindow
+    - [ ] sfMouse_setPositionRenderWindow
+    - [ ] sfTouch_getPositionRenderWindow
+  - [ ] Shader.h [0/42]
+    - [ ] sfShader_createFromFile
+    - [ ] sfShader_createFromMemory
+    - [ ] sfShader_createFromStream
+    - [ ] sfShader_destroy
+    - [ ] sfShader_setFloatUniform
+    - [ ] sfShader_setVec2Uniform
+    - [ ] sfShader_setVec3Uniform
+    - [ ] sfShader_setVec4Uniform
+    - [ ] sfShader_setColorUniform
+    - [ ] sfShader_setIntUniform
+    - [ ] sfShader_setIvec2Uniform
+    - [ ] sfShader_setIvec3Uniform
+    - [ ] sfShader_setIvec4Uniform
+    - [ ] sfShader_setIntColorUniform
+    - [ ] sfShader_setBoolUniform
+    - [ ] sfShader_setBvec2Uniform
+    - [ ] sfShader_setBvec3Uniform
+    - [ ] sfShader_setBvec4Uniform
+    - [ ] sfShader_setMat3Uniform
+    - [ ] sfShader_setMat4Uniform
+    - [ ] sfShader_setTextureUniform
+    - [ ] sfShader_setCurrentTextureUniform
+    - [ ] sfShader_setFloatUniformArray
+    - [ ] sfShader_setVec2UniformArray
+    - [ ] sfShader_setVec3UniformArray
+    - [ ] sfShader_setVec4UniformArray
+    - [ ] sfShader_setMat3UniformArray
+    - [ ] sfShader_setMat4UniformArray
+    - [ ] sfShader_setFloatParameter
+    - [ ] sfShader_setFloat2Parameter
+    - [ ] sfShader_setFloat3Parameter
+    - [ ] sfShader_setFloat4Parameter
+    - [ ] sfShader_setVector2Parameter
+    - [ ] sfShader_setVector3Parameter
+    - [ ] sfShader_setColorParameter
+    - [ ] sfShader_setTransformParameter
+    - [ ] sfShader_setTextureParameter
+    - [ ] sfShader_setCurrentTextureParameter
+    - [ ] sfShader_getNativeHandle
+    - [ ] sfShader_bind
+    - [ ] sfShader_isAvailable
+    - [ ] sfShader_isGeometryAvailable
+  - [ ] Shape.h [0/30]
+    - [ ] sfShapeGetPointCountCallback
+    - [ ] sfShapeGetPointCallback
+    - [ ] sfShape_create
+    - [ ] sfShape_destroy
+    - [ ] sfShape_setPosition
+    - [ ] sfShape_setRotation
+    - [ ] sfShape_setScale
+    - [ ] sfShape_setOrigin
+    - [ ] sfShape_getPosition
+    - [ ] sfShape_getRotation
+    - [ ] sfShape_getOrigin
+    - [ ] sfShape_move
+    - [ ] sfShape_rotate
+    - [ ] sfShape_scale
+    - [ ] sfShape_getTransform
+    - [ ] sfShape_getInverseTransform
+    - [ ] sfShape_setTexture
+    - [ ] sfShape_setTextureRect
+    - [ ] sfShape_setFillColor
+    - [ ] sfShape_setOutlineColor
+    - [ ] sfShape_setOutlineThickness
+    - [ ] sfShape_getTexture
+    - [ ] sfShape_getTextureRect
+    - [ ] sfShape_getFillColor
+    - [ ] sfShape_getOutlineColor
+    - [ ] sfShape_getOutlineThickness
+    - [ ] sfShape_getPointCount
+    - [ ] sfShape_getPoint
+    - [ ] sfShape_getLocalBounds
+    - [ ] sfShape_getGlobalBounds
+  - [X] Sprite.h [24/24]
+    - [X] sfSprite_create
+    - [X] sfSprite_copy
+    - [X] sfSprite_destroy
+    - [X] sfSprite_setPosition
+    - [X] sfSprite_setRotation
+    - [X] sfSprite_setScale
+    - [X] sfSprite_setOrigin
+    - [X] sfSprite_getPosition
+    - [X] sfSprite_getRotation
+    - [X] sfSprite_getScale
+    - [X] sfSprite_getOrigin
+    - [X] sfSprite_move
+    - [X] sfSprite_rotate
+    - [X] sfSprite_scale
+    - [X] sfSprite_getTransform
+    - [X] sfSprite_getInverseTransform
+    - [X] sfSprite_setTexture
+    - [X] sfSprite_setTextureRect
+    - [X] sfSprite_setColor
+    - [X] sfSprite_getTexture
+    - [X] sfSprite_getTextureRect
+    - [X] sfSprite_getColor
+    - [X] sfSprite_getLocalBounds
+    - [X] sfSprite_getGlobalBounds
+  - [-] Text.h [28/37] 
+    - [X] sfTextStyle
+    - [X] sfText_create
+    - [X] sfText_copy
+    - [X] sfText_destroy
+    - [X] sfText_setPosition
+    - [X] sfText_setRotation
+    - [X] sfText_setScale
+    - [X] sfText_setOrigin
+    - [X] sfText_getPosition
+    - [X] sfText_getRotation
+    - [X] sfText_getScale
+    - [X] sfText_getOrigin
+    - [X] sfText_move
+    - [X] sfText_rotate
+    - [X] sfText_scale
+    - [ ] sfText_getTransform
+    - [ ] sfText_getInverseTransform
+    - [X] sfText_setString
+    - [X] sfText_setFont
+    - [X] sfText_setCharacterSize
+    - [X] sfText_setStyle
+    - [X] sfText_setColor
+    - [ ] sfText_setFillColor
+    - [ ] sfText_setOutlineColor
+    - [ ] sfText_setOutlineThickness
+    - [X] sfText_getString
+    - [ ] sfText_getUnicodeString
+    - [X] sfText_getFont
+    - [X] sfText_getCharacterSize
+    - [X] sfText_getStyle
+    - [X] sfText_getColor
+    - [ ] sfText_getFillColor
+    - [ ] sfText_getOutlineColor
+    - [ ] sfText_getOutlineThickness
+    - [X] sfText_findCharacterPos
+    - [X] sfText_getLocalBounds
+    - [X] sfText_getGlobalBounds
+  - [X] Texture.h [23/23]
+    - [X] sfTexture_create
+    - [X] sfTexture_createFromFile
+    - [X] sfTexture_createFromMemory
+    - [X] sfTexture_createFromStream - not implementing
+    - [X] sfTexture_createFromImage
+    - [X] sfTexture_copy
+    - [X] sfTexture_destroy
+    - [X] sfTexture_getSize
+    - [X] sfTexture_copyToImage
+    - [X] sfTexture_updateFromPixels
+    - [X] sfTexture_updateFromImage
+    - [X] sfTexture_updateFromWindow
+    - [X] sfTexture_updateFromRenderWindow
+    - [X] sfTexture_setSmooth
+    - [X] sfTexture_isSmooth
+    - [X] sfTexture_setSrgb
+    - [X] sfTexture_isSrgb
+    - [X] sfTexture_setRepeated
+    - [X] sfTexture_isRepeated
+    - [X] sfTexture_generateMipmap
+    - [X] sfTexture_getNativeHandle
+    - [X] sfTexture_bind
+    - [X] sfTexture_getMaximumSize
+  - [X] Transform.h [12/12]
+    - [X] sfTransform_Identity
+    - [X] sfTransform_fromMatrix
+    - [X] sfTransform_getMatrix
+    - [X] sfTransform_getInverse
+    - [X] sfTransform_transformPoint
+    - [X] sfTransform_transformRect
+    - [X] sfTransform_combine
+    - [X] sfTransform_translate
+    - [X] sfTransform_rotate
+    - [X] sfTransform_rotateWithCenter
+    - [X] sfTransform_scale
+    - [X] sfTransform_scaleWithCenter
+  - [ ] Transformable.h [0/16]
+    - [ ] sfTransformable_create
+    - [ ] sfTransformable_copy
+    - [ ] sfTransformable_destroy
+    - [ ] sfTransformable_setPosition
+    - [ ] sfTransformable_setRotation
+    - [ ] sfTransformable_setScale
+    - [ ] sfTransformable_setOrigin
+    - [ ] sfTransformable_getPosition
+    - [ ] sfTransformable_getRotation
+    - [ ] sfTransformable_getScale
+    - [ ] sfTransformable_getOrigin
+    - [ ] sfTransformable_move
+    - [ ] sfTransformable_rotate
+    - [ ] sfTransformable_scale
+    - [ ] sfTransformable_getTransform
+    - [ ] sfTransformable_getInverseTransform
+  - [X] Vertex.h [1/1]
+    - [X] sfVertex
+  - [ ] VertexArray.h [0/11]
+    - [ ] sfVertexArray_create
+    - [ ] sfVertexArray_copy
+    - [ ] sfVertexArray_destroy
+    - [ ] sfVertexArray_getVertexCount
+    - [ ] sfVertexArray_getVertex
+    - [ ] sfVertexArray_clear
+    - [ ] sfVertexArray_resize
+    - [ ] sfVertexArray_append
+    - [ ] sfVertexArray_setPrimitiveType
+    - [ ] sfVertexArray_getPrimitiveType
+    - [ ] sfVertexArray_getBounds
+  - [X] View.h [16/16] 
+    - [X] sfView_create
+    - [X] sfView_createFromRect
+    - [X] sfView_copy
+    - [X] sfView_destroy
+    - [X] sfView_setCenter
+    - [X] sfView_setSize
+    - [X] sfView_setRotation
+    - [X] sfView_setViewport
+    - [X] sfView_reset
+    - [X] sfView_getCenter
+    - [X] sfView_getSize
+    - [X] sfView_getRotation
+    - [X] sfView_getViewport
+    - [X] sfView_move
+    - [X] sfView_rotate
+    - [X] sfView_zoom
+
+** TODO [/] Audio module
+
+* 
+* 
