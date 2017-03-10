@@ -26,9 +26,9 @@
 	   (font (make-font "arial.ttf"))
 	   (text (make-text :string "hello world"
 			    :size 28
-			    :color (make-color 0 255 0 0)
+			    :color (make-color 0 255 0 255)
 			    :font font))
-	   (circle (make-circle 10)))
+	   (circle (make-circle 25)))
       (setf (shape-position circle) (make-vector2 320.0 240.0))
       (setf (shape-fill-color circle) (make-color 255 0 0 255))
       (setf (entity-position text) (make-vector2 320.0 40.0))
@@ -44,7 +44,7 @@
 	      (> (- elapsed-time start-time) dt))
 	 do
 	   (setf start-time (clock-time-as-seconds clock))
-	   (render-window-clear window (make-color 0 0 0 255))
+	   (render-window-clear window (make-color 255 255 255 0))
 	   (entity-draw circle window (null-pointer))
 	   (entity-draw text window (null-pointer))
 	   (window-display window)

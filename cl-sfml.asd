@@ -10,13 +10,13 @@
 	       ;; (:cffi-grovel-file "sfml-grovel")
 	       (:file "utils")
 	       (:module system
-			:components ((:file "time")
+			:components ((:file "types")
+				     (:file "time")
 				     (:file "clock")
 				     (:file "vectors")))
 	       (:module win
 			;; :depends-on (system)
-			:components ((:file "types")
-				     (:file "video-mode")
+			:components ((:file "video-mode")
 				     (:file "context")
 				     (:file "keyboard")
 				     (:file "mouse")
@@ -47,4 +47,5 @@
 				     (:file "sprite")
 				     (:file "render-texture")
 				     (:file "render-window")
-				     ))))
+				     ))
+))

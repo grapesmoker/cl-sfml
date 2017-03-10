@@ -29,7 +29,7 @@
 
 (defcfun ("sfFont_createFromMemory" sf-font-create-from-memory) :pointer
   (data :pointer)
-  (size-in-bytes :unsigned-int))o
+  (size-in-bytes :unsigned-int))
 
 (defcfun ("sfFont_copy" sf-font-copy) :pointer
   (font :pointer))

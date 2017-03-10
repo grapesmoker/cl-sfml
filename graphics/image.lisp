@@ -9,6 +9,10 @@
    (color :initarg :color :initform (make-color) :accessor image-color)
    (filename :initarg :filename :initform "" :accessor image-filename)))
 
+(defmethod window-set-icon ((w window) (icon image))
+  (sf-window-set-icon (window-pointer w) (image-width icon)
+		      (image-height icon) (image-pixels-pointer icon)))
+
 (defcfun ("sfImage_create" sf-image-create) :pointer
   (width :unsigned-int)
   (height :unsigned-int))

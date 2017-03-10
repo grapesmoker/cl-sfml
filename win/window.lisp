@@ -157,9 +157,8 @@
   (height :unsigned-int)
   (pixels :pointer))
 
-(defmethod window-set-icon ((w window) (icon image))
-  (sf-window-set-icon (window-pointer w) (image-width icon)
-		      (image-height icon) (image-pixels-pointer icon)))
+;; the window-set-icon function has to live in the image file in graphics
+;; because of dependency ordering
 
 (defcfun ("sfWindow_setVisible" sf-window-set-visible) :void
   (window :pointer)
